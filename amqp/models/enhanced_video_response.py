@@ -11,7 +11,7 @@ class EnhancedVideoResponse:
         self.statusMessage = statusMessage
     
     def __str__(self):
-        return f"VideoEnhanceRequest(userId={self.userId}, requestId={self.requestId}, videoUrl={self.videoUrl}, enhancedVideoUrl={self.enhancedVideoUrl}, status={self.status}, statusMessage={self.statusMessage})"
+        return f"EnhancedVideoResponse({self.__dict__})\n"
     
     def dumps(self):
         return json.dumps(self.__dict__)

@@ -7,7 +7,7 @@ class VideoEnhanceRequest:
         self.videoUrl = videoUrl
     
     def __str__(self):
-        return f"VideoEnhanceRequest(userId={self.userId}, requestId={self.requestId}, videoUrl={self.videoUrl})"
+        return f"VideoEnhanceRequest({self.__dict__})\n"
     
     @classmethod
     def loads(cls, bytes):
