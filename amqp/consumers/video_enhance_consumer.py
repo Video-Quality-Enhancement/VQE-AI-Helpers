@@ -1,10 +1,13 @@
 import os, sys
 from dotenv import load_dotenv
-from models import VideoEnhanceRequest
+from models import VideoEnhanceRequest, EnhancedVideoResponse
 from producers import enhanced_video_producer
 from config import AMQPconnection
 
-def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: callable):
+def enhance_video_type(video_enhance_request: VideoEnhanceRequest) -> EnhancedVideoResponse:
+    pass
+
+def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: enhance_video_type):
 
     connection = AMQPconnection()
     consumerCh = connection.create_channel()
@@ -21,9 +24,16 @@ def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: cal
 
     def callback(ch, method, properties, body):
         video_enhance_request = VideoEnhanceRequest.loads(body)
-        enhanced_video_response = enhance_video(video_enhance_request)
-        enhanced_video_producer(producerCh, enhanced_video_response)
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        try:
+
+            enhanced_video_response = enhance_video(video_enhance_request)
+            enhanced_video_producer(producerCh, enhanced_video_response)
+            
+        except Exception as e:
+            print(f"Exception: {e}")
+            ch.basic_nack(delivery_tag=method.delivery_tag)
+        else:
+            ch.basic_ack(delivery_tag=method.delivery_tag)
     
     consumerCh.basic_consume(queue=result.method.queue, on_message_callback=callback)
 
