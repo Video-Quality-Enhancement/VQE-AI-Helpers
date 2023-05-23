@@ -1,13 +1,10 @@
 import os, sys
-from dotenv import load_dotenv
-from models import VideoEnhanceRequest, EnhancedVideoResponse
+from models import VideoEnhanceRequest
 from producers import enhanced_video_producer
 from config import AMQPconnection
 
-def enhance_video_type(video_enhance_request: VideoEnhanceRequest) -> EnhancedVideoResponse:
-    pass
 
-def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: enhance_video_type):
+def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: callable):
 
     connection = AMQPconnection()
     consumerCh = connection.create_channel()
@@ -20,7 +17,7 @@ def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: enh
 
     consumerCh.queue_bind(exchange=exchange, queue=result.method.queue, routing_key=routing_key)
 
-    consumerCh.basic_qos(prefetch_count=0) # for our case 0 is best, as we never know which video is small and which is big
+    consumerCh.basic_qos(prefetch_count=1) # 0 is no limit, 1
 
     def callback(ch, method, properties, body):
         video_enhance_request = VideoEnhanceRequest.loads(body)
@@ -28,10 +25,10 @@ def video_enhance_consumer(queue_name: str, routing_key: str, enhance_video: enh
 
             enhanced_video_response = enhance_video(video_enhance_request)
             enhanced_video_producer(producerCh, enhanced_video_response)
-            
+
         except Exception as e:
             print(f"Exception: {e}")
-            ch.basic_nack(delivery_tag=method.delivery_tag)
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
     
