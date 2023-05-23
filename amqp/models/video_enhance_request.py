@@ -9,6 +9,7 @@ class VideoEnhanceRequest:
     def __str__(self):
         return f"VideoEnhanceRequest(userId={self.userId}, requestId={self.requestId}, videoUrl={self.videoUrl})"
     
+    @classmethod
     def loads(cls, bytes):
         d = json.loads(bytes)
         return cls(**d)
