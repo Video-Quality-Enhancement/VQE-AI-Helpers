@@ -3,7 +3,8 @@ import pika, os
 class AMQPconnection:
 
     def __init__(self):
-        self.conn = pika.BlockingConnection(pika.ConnectionParameters(host=os.getenv("AMQP_URL")))
+        parameters = pika.URLParameters(os.getenv('AMQP_URL'))
+        self.conn = pika.BlockingConnection(parameters)
         self.channels = []
     
     def create_channel(self):
