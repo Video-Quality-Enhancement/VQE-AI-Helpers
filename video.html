@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <video id="video" controls></video>
+    <script>
+        const accessToken = 'ya29.a0AWY7CklH5G3NOLj0fFrvAu5vTLiU741PuItEyOOcYaIV-7AHDvwmY-RMTJNIEhL-Joa8Yk1UTE4ThEtjtMAfdynBeDoW0DaHqZs8IrozqQ2r9sIjG_aYy0TyS05qd4LIoVO-4RQ6V2ZFuZbSbJ8u1X_9xt5TaCgYKAdQSARASFQG1tDrp0YD0COszTpNIAA7TRE5OEA0163';
+        const videoUrl = 'https://storage.googleapis.com/vqe-enhanced-videos/videoplayback-16secs-360p.mp4';
+        const videoElement = document.getElementById('video');
+        fetch(videoUrl, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const objectUrl = URL.createObjectURL(blob);
+            videoElement.src = objectUrl;
+        });
+    </script>
+</body>
+</html>
