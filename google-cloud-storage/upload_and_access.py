@@ -22,7 +22,8 @@ class GoogleCloudStorage:
 
         # get signed url for the emailid
         expiration_time = datetime.timedelta(hours=1)
-        url = myfile_blob.generate_signed_url(expiration_time, method="GET")
+        # url = myfile_blob.generate_signed_url(expiration_time, method="GET")
+        # url = myfile_blob._get_download_url
 
         return f"https://storage.googleapis.com/{os.getenv('BUCKET_NAME')}/{filepath}"
     
