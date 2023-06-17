@@ -3,6 +3,7 @@ import os
 import datetime
 from google.cloud import storage
 from google.oauth2.service_account import Credentials
+import cv2
 
 class GoogleCloudStorage:
     def __init__(self) -> None:
@@ -30,6 +31,12 @@ class GoogleCloudStorage:
         blobs = self.bucket.list_blobs()
         for blob in blobs:
             print(blob.name)
+    
+    def stream_file(self):
+        blob = self.bucket.blob("videoplayback-16secs-360p.mp4")
+        cv2.VideoCapture(blob.open().read())
+        cv2.close()
+        return 
 
 
 def main():
